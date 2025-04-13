@@ -1,31 +1,26 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
-import seaborn as sns
+import pickle
+import requests
 
 st.set_page_config(page_title="Titanic Survival Predictor", page_icon="🚢")
-
 st.title("🚢 Titanic Survival Predictor")
 st.markdown("**Enter passenger details to check if they might have survived the Titanic disaster.**")
 
-@st.cache_data
+@st.cache_resource
 def load_model():
-    df = sns.load_dataset("titanic").dropna(subset=["age", "sex", "fare", "embarked", "pclass", "sibsp", "parch"])
-    df = df[["survived", "pclass", "sex", "age", "sibsp", "parch", "fare", "embarked"]]
-    df["sex"] = df["sex"].map({"male": 0, "female": 1})
-    df["embarked"] = df["embarked"].map({"S": 0, "C": 1, "Q": 2})
-    
-    X = df.drop("survived", axis=1)
-    y = df["survived"]
-    
-    model = RandomForestClassifier()
-    model.fit(X, y)
+    url = "https://raw.githubusercontent.com/Villaa866/titanic-predictor/main/titanic_model.pkl"
+    response = requests.get(url)
+    with open("titanic_model.pkl", "wb") as f:
+        f.write(response.content)
+
+    with open("titanic_model.pkl", "rb") as f:
+        model = pickle.load(f)
     return model
 
 model = load_model()
 
-# Organize layout with columns
+# Input layout
 col1, col2 = st.columns(2)
 
 with col1:
@@ -39,7 +34,7 @@ with col2:
     fare = st.number_input("Fare", 0.0, 600.0, 50.0)
     embarked = st.selectbox("Embarked", ["Southampton", "Cherbourg", "Queenstown"])
 
-# Encode
+# Encode inputs
 sex = 0 if sex == "Male" else 1
 embarked = {"Southampton": 0, "Cherbourg": 1, "Queenstown": 2}[embarked]
 
@@ -51,7 +46,3 @@ if st.button("Predict Survival"):
         st.success("✅ This passenger would have **survived**!")
     else:
         st.error("❌ Unfortunately, this passenger would **not survive**.")
-
-
-Updated app UI and layout
- 
