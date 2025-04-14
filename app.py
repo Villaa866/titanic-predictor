@@ -51,7 +51,13 @@ embarked = {"Southampton": 0, "Cherbourg": 1, "Queenstown": 2}[embarked]
 input_data = np.array([[pclass, sex, age, sibsp, parch, fare, embarked]])
 
 if st.button("Predict Survival"):
-    prediction = model.predict(input_data)
+    prediction = model.predict([features])[0]
+    probability = model.predict_proba([features])[0][1]  # Probability of survival
+
+    if prediction == 1:
+        st.success(f"This passenger would have survived! (Probability: {probability:.2%})")
+    else:
+        st.error(f"This passenger would NOT have survived. (Probability of survival: {probability:.2%})")
     if prediction[0] == 1:
         st.success("✅ This passenger would have **survived**!")
     else:
