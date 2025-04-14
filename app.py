@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import pickle
-import requests
 
 # App config
 st.set_page_config(page_title="Titanic Survival Predictor", page_icon="🚢", layout="centered")
@@ -15,13 +14,14 @@ with st.sidebar:
     Deployed via Streamlit  
     Trained on real Titanic dataset  
     """)
-    st.markdown("**Creator:** Eben Villa")  # Replace with your actual name
+    st.markdown("**Creator:** Eben Villa")
     st.markdown("[View on GitHub](https://github.com/Villaa866/titanic-predictor)")
 
 # Main header
 st.title("🚢 Titanic Survival Predictor")
 st.markdown("Enter passenger details below to predict their survival on the Titanic.")
-@st.cache_resource
+
+# Load model
 @st.cache_resource
 def load_model():
     with open("titanic_model.pkl", "rb") as f:
@@ -50,15 +50,12 @@ embarked = {"Southampton": 0, "Cherbourg": 1, "Queenstown": 2}[embarked]
 
 input_data = np.array([[pclass, sex, age, sibsp, parch, fare, embarked]])
 
+# Predict
 if st.button("Predict Survival"):
-    prediction = model.predict([features])[0]
-    probability = model.predict_proba([features])[0][1]  # Probability of survival
+    prediction = model.predict(input_data)[0]
+    probability = model.predict_proba(input_data)[0][1]  # Survival probability
 
     if prediction == 1:
-        st.success(f"This passenger would have survived! (Probability: {probability:.2%})")
+        st.success(f"✅ This passenger would have survived! (Probability: {probability:.2%})")
     else:
-        st.error(f"This passenger would NOT have survived. (Probability of survival: {probability:.2%})")
-    if prediction[0] == 1:
-        st.success("✅ This passenger would have **survived**!")
-    else:
-        st.error("❌ Unfortunately, this passenger would **not survive**.")
+        st.error(f"❌ Unfortunately, this passenger would not survive. (Survival Probability: {probability:.2%})")
