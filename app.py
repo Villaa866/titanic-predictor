@@ -3,10 +3,24 @@ import numpy as np
 import pickle
 import requests
 
-st.set_page_config(page_title="Titanic Survival Predictor", page_icon="🚢")
-st.title("🚢 Titanic Survival Predictor")
-st.markdown("**Enter passenger details to check if they might have survived the Titanic disaster.**")
+# App config
+st.set_page_config(page_title="Titanic Survival Predictor", page_icon="🚢", layout="centered")
 
+# Sidebar
+with st.sidebar:
+    st.title("About")
+    st.markdown("""
+    **Titanic Survival Predictor**  
+    Built with Machine Learning  
+    Deployed via Streamlit  
+    Trained on real Titanic dataset  
+    """)
+    st.markdown("**Creator:** Eben Villa")  # Replace with your actual name
+    st.markdown("[View on GitHub](https://github.com/Villaa866/titanic-predictor)")
+
+# Main header
+st.title("🚢 Titanic Survival Predictor")
+st.markdown("Enter passenger details below to predict their survival on the Titanic.")
 @st.cache_resource
 def load_model():
     url = "https://raw.githubusercontent.com/Villaa866/titanic-predictor/main/titanic_model.pkl"
