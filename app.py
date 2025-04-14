@@ -22,12 +22,8 @@ with st.sidebar:
 st.title("🚢 Titanic Survival Predictor")
 st.markdown("Enter passenger details below to predict their survival on the Titanic.")
 @st.cache_resource
+@st.cache_resource
 def load_model():
-    url = "https://raw.githubusercontent.com/Villaa866/titanic-predictor/main/titanic_model.pkl"
-    response = requests.get(url)
-    with open("titanic_model.pkl", "wb") as f:
-        f.write(response.content)
-
     with open("titanic_model.pkl", "rb") as f:
         model = pickle.load(f)
     return model
